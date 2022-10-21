@@ -117,7 +117,7 @@ public class GestionFormularios {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				request.setAttribute("mensajeC", "comprarealizada");
+				request.setAttribute("mensajeC", "compra realizada");
 			} else {
 				request.setAttribute("mensajeC", "faltan datos");
 				System.out.println("faltan datos");

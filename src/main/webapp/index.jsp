@@ -42,7 +42,7 @@
                 <select class="selectdeespectaculos" id="fname1" name="tipoespectaculo">
                     <option value="PARTIDO_FUTBOL">Partido De Futbol</option>
                     <option value="CONCIERTO">Concierto</option>
-                    <option value="TEATRO" selected>Teatr</option>
+                    <option value="TEATRO" selected>Teatro</option>
                 </select>
                 <input type="number" id="fname1" name="numentradas"  placeholder="Numero De Entradas">
                 <input type="date" id="fname1" name="fecha" placeholder="Fecha">

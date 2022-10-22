@@ -93,26 +93,32 @@ public class GestionFormularios {
 			if (comprobartodosdatoscompra()) {
 				System.out.println("todos datos");
 				String sqlcomprobarprecio="select PRECIO_VENTA from eventos where ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"')";
-				//String sqlconsultaentradasdisponibles="select N_E_DISPONIBLES from eventos where ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"')";
-				Double precio_Evento=0.0;
+				Double precioventa=0.0;
 				try {
 					ResultSet rs=s.executeQuery(sqlcomprobarprecio);
-					precio_Evento=rs.getDouble(0);
-					//ResultSet rs2=s.executeQuery(sqlconsultaentradasdisponibles);
-					//int entradasdisponibles=rs2.getInt(0);
+					while (rs.next()) {
+						precioventa=rs.getDouble("PRECIO_VENTA");
+					}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				//String sqlcomprobarentradasdisponibles="select N_E_DISPONIBLES from eventos where ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"')";
-				Double preciototal=precio_Evento*Integer.parseInt(request.getParameter("numentradas"));
-				String sqlINSERTARcompra="INSERT INTO r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO) VALUES ("+consultaid()+","+preciototal+","+request.getParameter("DNI")+","+request.getParameter("tipoespectaculo")+",1";
-				
-				//INSERT INTO r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO) VALUES ("+consultaid()+","+preciototal+","+request.getParameter("DNI")+","+request.getParameter("tipoespectaculo")+",(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"),(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'))";
-				//String sqlactualizaentradasdisponibles="UPDATE eventos SET N_E_DISPONIBLES=(select N_E_DISPONIBLES from eventos where ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'))-" +Integer.parseInt(request.getParameter("numentradas"))+" WHERE ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"')";
+
+
+				//Calcular PRECIO_TOTAL(PRECIO_VENTA*NUM_ENTRADAS)
+				Double preciototal=precioventa*Integer.parseInt(request.getParameter("numentradas"));
+				//insertar en la tabla r_compras
+				String sqlinsertarcompra="INSERT INTO r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS) VALUES ("+consultaid()+" ,"+preciototal+" ,'"+request.getParameter("DNI")+"','"+request.getParameter("tipoespectaculo")+"',(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'),"+request.getParameter("numentradas")+")";
 				try {
-					s.executeUpdate(sqlINSERTARcompra);
-					//s.executeUpdate(sqlactualizaentradasdisponibles);
+					s.executeUpdate(sqlinsertarcompra);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//actualizar N_E_DISPONIBLES de eventos
+				String sqlactualizarned="UPDATE eventos SET N_E_DISPONIBLES=N_E_DISPONIBLES-"+request.getParameter("numentradas")+" WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'";
+				try {
+					s.executeUpdate(sqlactualizarned);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

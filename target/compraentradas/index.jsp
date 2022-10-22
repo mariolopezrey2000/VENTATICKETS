@@ -40,9 +40,10 @@
             <form  action="servlet" method="post">
                 <input type="text" id="fname1" name="DNI"placeholder="Dni">
                 <select class="selectdeespectaculos" id="fname1" name="tipoespectaculo">
-                    <option value="PARTIDO_FUTBOL">Partido De Futbol</option>
-                    <option value="CONCIERTO">Concierto</option>
-                    <option value="TEATRO" selected>Teatro</option>
+                    //recibir arraylist eventos del servlet y mostrarlo como opciones jsp
+                    <% 
+                        ArrayList<Evento> lista = (ArrayList<Evento>)request.getAttribute("lista");
+                    %>
                 </select>
                 <input type="number" id="fname1" name="numentradas"  placeholder="Numero De Entradas">
                 <input type="date" id="fname1" name="fecha" placeholder="Fecha">

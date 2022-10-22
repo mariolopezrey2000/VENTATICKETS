@@ -53,6 +53,9 @@ public class GestionFormularios {
 		 * }
 		 */
 		switch (request.getParameter("tipo")) {
+			case "inicio":
+				iniciarpagina();
+				break;
 			case "a":
 				registrousuario();
 				break;
@@ -68,7 +71,31 @@ public class GestionFormularios {
 		}
 
 	}
-
+	public void iniciarpagina() throws ServletException, IOException {
+		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		//consultar eventos disponibles y enviarselo a la pagina
+		String sql="select * from evento";
+		ArrayList<Evento> eventos=new ArrayList<Evento>();
+		try {
+			ResultSet rs=s.executeQuery(sql);
+			while (rs.next()) {
+				Evento e=new Evento();
+				e.setID_EVENTO(rs.getInt("ID_EVENTO"));
+				e.setNOMBRE(rs.getString("NOMBRE"));
+				e.setPRECIO_VENTA(rs.getDouble("PRECIO_VENTA"));
+				e.setFECHA(rs.getString("FECHA"));
+				e.setHORA(rs.getString("HORA"));
+				eventos.add(e);
+			}
+	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//ESCRIBIR EL ARRAYLIST EVENTOS EN LA PAGINA EN FORMA DE SELECT
+		request.setAttribute("lista", eventos);
+		rd.forward(request, response);
+	}
 	public void registrousuario() throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 		if (consultarusuario()) {

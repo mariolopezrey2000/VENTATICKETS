@@ -111,7 +111,7 @@ public class GestionFormularios {
 				eventos.add(e);
 			}
 			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("DNI", request.getParameter("DNI"));
+			request.setAttribute("DNI", DNI);
 			request.setAttribute("lista", eventos);	
 			rd.forward(request, response);
 	

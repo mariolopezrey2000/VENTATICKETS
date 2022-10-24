@@ -19,8 +19,8 @@ pageEncoding="ISO-8859-1"%>
         <div class="formularioUsuario">
             <h3>REGISTRO DE USUARIOS</h3>
             <form method="post" action="servlet">   
-                <input type="text" id="fname1" name="NOMBRE" placeholder="Nombre">
-                <input type="text" id="fname1" name="APELLIDO" placeholder="Apellido">
+                <input type="text" id="fname1" name="NOMBRE"placeholder="Nombre">
+                <input type="text" id="fname1" name="APELLIDO"placeholder="Apellido">
                 <input type="text" id="fname1" name="DNI" placeholder="Dni">
                 <input type="text" id="fname1" name="CORREO" placeholder="Correo">
                 <input type="text" id="fname1" name="NUMEROTELEFONO" placeholder="Numero De Telefono">

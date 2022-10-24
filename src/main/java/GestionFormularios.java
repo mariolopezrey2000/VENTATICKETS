@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GestionFormularios {
 	private static Statement s;
 	private static String DNI;
+	private static String nevento;
 	private static HttpServletRequest request;
 	private static HttpServletResponse response;
 
@@ -52,6 +53,7 @@ public class GestionFormularios {
 				iniciarpagina();
 				break;
 			case "b":
+				comprafinal();
 				break;
 			case "comprobar":
 				cfonsultacompra();
@@ -95,6 +97,32 @@ public class GestionFormularios {
 		request.setAttribute("DNI", DNI);
 		rd.forward(request, response);
 	}
+	//metodo compra final el cual metera los datos a la base de datos.
+	public void comprafinal() throws ServletException, IOException {
+		//consultar el precio del evento
+		String sql="select PRECIO_VENTA from eventos where NOMBRE='TEATRO'";
+		double precio=0;
+		try {
+			ResultSet rs=s.executeQuery(sql);
+			while (rs.next()) {
+				precio=rs.getDouble("PRECIO_VENTA");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//calcular precio total
+		Double preciofinal=precio*Double.parseDouble(request.getParameter("nentradas"));
+		//insertar datos de la compra en la bbdd
+		sql="insert into r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS,FECHA,HORA) values("+consultaid()+" , "+preciofinal+" , '"+DNI+"' , '"+request.getParameter("evento")+"' , "+request.getParameter("id_evento")+" , "+request.getParameter("nentradas")+" , '"+request.getParameter("fecha")+"' , '"+request.getParameter("hora")+"')";
+		try {
+			s.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	//metodo que coge de la base de datos los dias y horas disponibles del tipo de espectaculos
 	public void cfonsultacompra() throws ServletException, IOException {
 		String sql="select * from eventos where NOMBRE='"+request.getParameter("selectdeespectaculos")+"'";
@@ -104,7 +132,9 @@ public class GestionFormularios {
 			while (rs.next()) {
 				Evento e=new Evento();
 				e.setID_EVENTO(rs.getInt("ID_EVENTO"));
+				
 				e.setNOMBRE(rs.getString("NOMBRE"));
+				nevento=rs.getString("NOMBRE");
 				e.setFECHA(rs.getString("FECHA"));
 				e.setHORA(rs.getString("HORA"));
 				e.setPRECIO_VENTA(rs.getDouble("PRECIO_VENTA"));
@@ -113,6 +143,8 @@ public class GestionFormularios {
 			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 			request.setAttribute("DNI", DNI);
 			request.setAttribute("lista", eventos);	
+			request.setAttribute("evento",nevento);
+			request.setAttribute("nentradas", request.getParameter("nentradas"));
 			rd.forward(request, response);
 	
 		} catch (SQLException e) {

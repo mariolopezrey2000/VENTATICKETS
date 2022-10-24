@@ -14,16 +14,16 @@ body {
     font-size: 35px;
     color: white ;
 }
-.formularioCompra,.formulariosconsultas {
+.formularioUsuario {
+    float: left;
+    width:50%;
+    padding: 110px;
+    text-align: center;
+}
+.formularioUsuario,.formulariosconsultas {
     border: 1px black solid;
     background-color: #AEB8AE;
     height: 760px 
-}
-.formularioCompra {
-    float: left;
-    width: 50%;
-    padding: 110px;
-    text-align: center;
 }
 .formulariosconsultas{
     float: left;
@@ -38,7 +38,7 @@ body {
     clear: both;
     color: white;
 }
-.select{
+.selectdeespectaculos{
     width:200px;
     height: 40px;
     margin: 5px;
@@ -58,6 +58,7 @@ height: 10px;
 width: 10px;
 
 }
+
 input{
     width:200px;
     height: 40px;
@@ -74,17 +75,3 @@ input{
     margin-top: 9px;
     margin-bottom: 10px;
 }
-#selectdeespectaculos{
-    width: 1000px;
-    height: 4000px;
-    margin: 5px;
-}
-#submit2{
-    width: 90px;
-    margin-top: 5px;
-    align-items: center;
-}
-.button1{
-    color: #1F401D;
-}
-

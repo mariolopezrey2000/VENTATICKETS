@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class GestionFormularios {
 	private static Statement s;
+	private static String DNI;
 	private static HttpServletRequest request;
 	private static HttpServletResponse response;
 
@@ -40,24 +41,15 @@ public class GestionFormularios {
 	}
 
 	public void gestion() throws ServletException, IOException {
-		/*
-		 * String sql="select * from usuario";
-		 * try {
-		 * ResultSet rs=s.executeQuery(sql);
-		 * while (rs.next()) {
-		 * System.out.println( rs.getString("Mario"));
-		 * }
-		 * } catch (SQLException e) {
-		 * // TODO Auto-generated catch block
-		 * e.printStackTrace();
-		 * }
-		 */
 		switch (request.getParameter("tipo")) {
-			case "inicio":
+			case "iniciar":
 				iniciarpagina();
 				break;
 			case "a":
 				registrousuario();
+				DNI=request.getParameter("DNI");
+					//request.setAttribute("DNI", DNI);
+				iniciarpagina();
 				break;
 			case "b":
 				compra();
@@ -68,23 +60,29 @@ public class GestionFormularios {
 			case "d":
 				cancelacion();
 				break;
+			case "consultausuario":
+				if(consultarusuario()){
+					DNI=request.getParameter("DNI");
+					//request.setAttribute("DNI", DNI);
+					iniciarpagina();
+				}else{
+					RequestDispatcher rd=request.getRequestDispatcher("inicio.jsp");
+					request.setAttribute("error", "Usuario no registrado");
+					rd.forward(request, response);
+				}
+				break;
 		}
 
 	}
 	public void iniciarpagina() throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 		//consultar eventos disponibles y enviarselo a la pagina
-		String sql="select * from evento";
+		String sql="select distinct NOMBRE from eventos";
 		ArrayList<Evento> eventos=new ArrayList<Evento>();
 		try {
 			ResultSet rs=s.executeQuery(sql);
 			while (rs.next()) {
 				Evento e=new Evento();
-				e.setID_EVENTO(rs.getInt("ID_EVENTO"));
 				e.setNOMBRE(rs.getString("NOMBRE"));
-				e.setPRECIO_VENTA(rs.getDouble("PRECIO_VENTA"));
-				e.setFECHA(rs.getString("FECHA"));
-				e.setHORA(rs.getString("HORA"));
 				eventos.add(e);
 			}
 	
@@ -92,18 +90,33 @@ public class GestionFormularios {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 		//ESCRIBIR EL ARRAYLIST EVENTOS EN LA PAGINA EN FORMA DE SELECT
 		request.setAttribute("lista", eventos);
 		rd.forward(request, response);
 	}
 	public void registrousuario() throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+		RequestDispatcher rd = request.getRequestDispatcher("inicio.jsp");
 		if (consultarusuario()) {
 			System.out.println("usuario encontrado");
 			request.setAttribute("mensajeu", "Usuario ya está dado de alta");
 		} else {
 			if (comprobartodosdatosusuario()) {
-				request.setAttribute("mensajeu", "Usuario  registrado");
+				rd=request.getRequestDispatcher("index.jsp");
+				//insertar datos del usuario en la bbdd
+				String sql="insert into usuario values("+request.getParameter("DNI")+","+request.getParameter("NOMBRE")+"_"+request.getParameter("APELLIDO")+","+request.getParameter("CORREO")+","+request.getParameter("NUMEROTELEFONO")+")";
+				try {
+					s.executeUpdate(sql);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					s.executeUpdate(sql);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else {
 				System.out.println("faltan datos");
 				request.setAttribute("mensajeu", "faltan datos");
@@ -197,11 +210,11 @@ public class GestionFormularios {
 	public boolean comprobartodosdatosusuario() {
 		boolean todos = true;
 		String[] listadatos = new String[5];
-		listadatos[0] = request.getParameter("nombre");
-		listadatos[1] = request.getParameter("apellido");
+		listadatos[0] = request.getParameter("NOMBRE");
+		listadatos[1] = request.getParameter("APELLIDO");
 		listadatos[2] = request.getParameter("DNI");
-		listadatos[3] = request.getParameter("correo");
-		listadatos[4] = request.getParameter("telf");
+		listadatos[3] = request.getParameter("CORREO");
+		listadatos[4] = request.getParameter("NUMEROTELEFONO");
 		for (int i = 0; i < listadatos.length; i++) {
 			if (listadatos[i].equals("")) {
 				todos = false;

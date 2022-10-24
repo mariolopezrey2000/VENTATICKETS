@@ -5,7 +5,7 @@
 <web-app>
   <display-name>c</display-name>
   <welcome-file-list>
-    <welcome-file>inicio.html</welcome-file>
+    <welcome-file>inicio.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
     <servlet-name>servlet</servlet-name>

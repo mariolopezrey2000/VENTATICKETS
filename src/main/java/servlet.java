@@ -58,37 +58,7 @@ public class servlet extends HttpServlet {
 		GestionFormularios.setRequest(request);
 		GestionFormularios.setResponse(response);
 		gf.gestion();
-		
-		/*response.setContentType("text/html");
-	    PrintWriter out = response.getWriter();
-	    out.println("<html>");
-    	out.println("<body>");
-    	String sql="select * from usuario";
-    	try {
-			ResultSet resultado=s.executeQuery(sql);
-			out.println("<ul>");
-			while (resultado.next()) {
-				out.println("<li>"+resultado.getString("nombre")+"</li>");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	out.println("</body>");
-    	out.println("</html>");
-	    
-	    
-	    
-		/*String sql="select * from usuario";
-		try {
-			ResultSet resultado=s.executeQuery(sql);
-			while (resultado.next()) {
-				System.out.println(resultado.getInt("DNI"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+
 	}
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

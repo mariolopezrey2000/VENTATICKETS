@@ -7,7 +7,7 @@ pageEncoding="ISO-8859-1"%>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Reserva tus tiquets</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='css.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='inicio.css'>
     <script src='main.js'></script>
 </head>
 

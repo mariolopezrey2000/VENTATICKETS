@@ -52,10 +52,9 @@ public class GestionFormularios {
 				iniciarpagina();
 				break;
 			case "b":
-				compra();
 				break;
-			case "c":
-				//cfonsultacompra();
+			case "comprobar":
+				cfonsultacompra();
 				break;
 			case "d":
 				cancelacion();
@@ -93,8 +92,35 @@ public class GestionFormularios {
 		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 		//ESCRIBIR EL ARRAYLIST EVENTOS EN LA PAGINA EN FORMA DE SELECT
 		request.setAttribute("lista", eventos);
+		request.setAttribute("DNI", DNI);
 		rd.forward(request, response);
 	}
+	//metodo que coge de la base de datos los dias y horas disponibles del tipo de espectaculos
+	public void cfonsultacompra() throws ServletException, IOException {
+		String sql="select * from eventos where NOMBRE='"+request.getParameter("selectdeespectaculos")+"'";
+		ArrayList<Evento> eventos=new ArrayList<Evento>();
+		try {
+			ResultSet rs=s.executeQuery(sql);
+			while (rs.next()) {
+				Evento e=new Evento();
+				e.setID_EVENTO(rs.getInt("ID_EVENTO"));
+				e.setNOMBRE(rs.getString("NOMBRE"));
+				e.setFECHA(rs.getString("FECHA"));
+				e.setHORA(rs.getString("HORA"));
+				e.setPRECIO_VENTA(rs.getDouble("PRECIO_VENTA"));
+				eventos.add(e);
+			}
+			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+			request.setAttribute("DNI", request.getParameter("DNI"));
+			request.setAttribute("lista", eventos);	
+			rd.forward(request, response);
+	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+		
 	public void registrousuario() throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("inicio.jsp");
 		if (consultarusuario()) {
@@ -102,75 +128,20 @@ public class GestionFormularios {
 			request.setAttribute("mensajeu", "Usuario ya está dado de alta");
 		} else {
 			if (comprobartodosdatosusuario()) {
-				rd=request.getRequestDispatcher("index.jsp");
+				
 				//insertar datos del usuario en la bbdd
-				String sql="insert into usuario values("+request.getParameter("DNI")+","+request.getParameter("NOMBRE")+"_"+request.getParameter("APELLIDO")+","+request.getParameter("CORREO")+","+request.getParameter("NUMEROTELEFONO")+")";
+				String sql="insert into usuario (DNI,NOMBRE,CORREO,NUMEROTELEFONO) values('"+request.getParameter("DNI")+"','"+request.getParameter("NOMBRE")+"_"+request.getParameter("APELLIDO")+"','"+request.getParameter("CORREO")+"','"+request.getParameter("NUMEROTELEFONO")+"')";
 				try {
 					s.executeUpdate(sql);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				try {
-					s.executeUpdate(sql);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				rd=request.getRequestDispatcher("index.jsp");
 			} else {
 				System.out.println("faltan datos");
 				request.setAttribute("mensajeu", "faltan datos");
 			}
-		}
-		rd.forward(request, response);
-	}
-
-	public void compra() throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-		//consulta del precio de un evento
-
-		if (consultarusuario()) {
-			if (comprobartodosdatoscompra()) {
-				System.out.println("todos datos");
-				String sqlcomprobarprecio="select PRECIO_VENTA from eventos where ID_EVENTO=(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"')";
-				Double precioventa=0.0;
-				try {
-					ResultSet rs=s.executeQuery(sqlcomprobarprecio);
-					while (rs.next()) {
-						precioventa=rs.getDouble("PRECIO_VENTA");
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-
-				//Calcular PRECIO_TOTAL(PRECIO_VENTA*NUM_ENTRADAS)
-				Double preciototal=precioventa*Integer.parseInt(request.getParameter("numentradas"));
-				//insertar en la tabla r_compras
-				String sqlinsertarcompra="INSERT INTO r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS) VALUES ("+consultaid()+" ,"+preciototal+" ,'"+request.getParameter("DNI")+"','"+request.getParameter("tipoespectaculo")+"',(SELECT ID_EVENTO FROM eventos WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'),"+request.getParameter("numentradas")+")";
-				try {
-					s.executeUpdate(sqlinsertarcompra);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//actualizar N_E_DISPONIBLES de eventos
-				String sqlactualizarned="UPDATE eventos SET N_E_DISPONIBLES=N_E_DISPONIBLES-"+request.getParameter("numentradas")+" WHERE NOMBRE='"+request.getParameter("tipoespectaculo")+"'";
-				try {
-					s.executeUpdate(sqlactualizarned);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				request.setAttribute("mensajeC", "compra realizada");
-			} else {
-				request.setAttribute("mensajeC", "faltan datos");
-				System.out.println("faltan datos");
-			}
-		} else {
-			System.out.println("usuario no encontrado");
-			request.setAttribute("mensajeC", "Primero Tiene que registrarse");
 		}
 		rd.forward(request, response);
 	}

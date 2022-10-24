@@ -19,17 +19,21 @@ pageEncoding="ISO-8859-1"%>
         <div class="formularioCompra">
             <h3>COMPRA</h3>
             <form method="post">
-                <input type="text" id="fname1" name="fname1"placeholder="Dni">
+                <br><h4>
+                <% out.println("DNI:"+request.getAttribute("DNI")); %>
+                </h4>
+                <input type="hidden" name="DNI" value="<%request.getAttribute("DNI");%>" placeholder="<%request.getAttribute("DNI");%>">
                 <br>
                 <select class="select" id="fname1" id="selectdeespectaculos" class="selectdeespectaculos" name="selectdeespectaculos">
-                    <option value="paypal">Partido De Futbol</option>
-                    <option value="tarjeta">Concierto </option>
-                    <option value="contrarembolso" selected>Teatro</option>
+                    <option value="PARTIDO_FUTBOL">Partido De Futbol</option>
+                    <option value="CONCIERTO">Concierto </option>
+                    <option value="TEATRO">Teatro</option>
                 </select>
                 <br>
-                <button type="submit" class="button1" name="button">Comprobar</button>
                 <br>
                 <input type="number" id="fname1" name="fname3" placeholder="Numero De Entradas">
+                <br>
+                <button type="submit" class="button1" name="button">Comprobar</button>
                 <br>
                 <select class="select" id="fname1" name="selectdedias">
                 </select>
@@ -40,8 +44,8 @@ pageEncoding="ISO-8859-1"%>
                 <input type="checkbox" name="tipo" id="tipo" class="checkbox" value="b"checked>
                 <br>   
                 <input type="submit" value="Enivar"  id="submit">
-                <br><br>
-                <h3 class="resultadocompra"></h3>
+                <br>
+                
             </form>
         </div>
         <div class="formulariosconsultas">

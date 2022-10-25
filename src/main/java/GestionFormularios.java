@@ -1,10 +1,13 @@
+package principal;
+
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-
+import clases.Evento;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -101,18 +104,20 @@ public class GestionFormularios {
 	public void comprafinal() throws ServletException, IOException {
 		//consultar el precio del evento
 		String sql="select PRECIO_VENTA from eventos where NOMBRE='TEATRO'";
-		double precio=0;
+		String precio=request.getParameter("numentradas");
+		System.out.println(precio);
+		double preciod=0;
 		try {
 			ResultSet rs=s.executeQuery(sql);
 			while (rs.next()) {
-				precio=rs.getDouble("PRECIO_VENTA");
+				preciod=rs.getDouble("PRECIO_VENTA");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//calcular precio total
-		Double preciofinal=precio*Double.parseDouble(request.getParameter("nentradas"));
+		 double preciofinal=preciod*Double.parseDouble(request.getParameter("numentradas"));
 		//insertar datos de la compra en la bbdd
 		sql="insert into r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS,FECHA,HORA) values("+consultaid()+" , "+preciofinal+" , '"+DNI+"' , '"+request.getParameter("evento")+"' , "+request.getParameter("id_evento")+" , "+request.getParameter("nentradas")+" , '"+request.getParameter("fecha")+"' , '"+request.getParameter("hora")+"')";
 		try {
@@ -140,11 +145,13 @@ public class GestionFormularios {
 				e.setPRECIO_VENTA(rs.getDouble("PRECIO_VENTA"));
 				eventos.add(e);
 			}
-			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+			String numeroentradas=request.getParameter("N_E");
 			request.setAttribute("DNI", DNI);
 			request.setAttribute("lista", eventos);	
 			request.setAttribute("evento",nevento);
-			request.setAttribute("nentradas", request.getParameter("nentradas"));
+			request.setAttribute("numeroE", numeroentradas);
+			System.out.println(numeroentradas);
+			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 			rd.forward(request, response);
 	
 		} catch (SQLException e) {

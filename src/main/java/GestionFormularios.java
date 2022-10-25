@@ -103,29 +103,59 @@ public class GestionFormularios {
 	//metodo compra final el cual metera los datos a la base de datos.
 	public void comprafinal() throws ServletException, IOException {
 		//consultar el precio del evento
-		String sql="select PRECIO_VENTA from eventos where NOMBRE='TEATRO'";
-		String precio=request.getParameter("numentradas");
-		System.out.println(precio);
-		double preciod=0;
-		try {
-			ResultSet rs=s.executeQuery(sql);
-			while (rs.next()) {
-				preciod=rs.getDouble("PRECIO_VENTA");
+		if (comprobartodosdatoscompra()) {
+			String sql="select PRECIO_VENTA from eventos where ID_EVENTO='3'";
+			String precio=request.getParameter("numentradas");
+			System.out.println(precio+"p");
+			double preciod=0;
+			try {
+				ResultSet rs=s.executeQuery(sql);
+				while (rs.next()) {
+					preciod=rs.getDouble("PRECIO_VENTA");
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//calcular precio total
+			 double preciofinal=preciod*Double.parseDouble(request.getParameter("numentradas"));
+			 System.out.println(preciofinal);
+			 sql="select ID_EVENTO from eventos where NOMBRE='"+request.getParameter("evento")+"' and FECHA='"+request.getParameter("selectdedias")+"' and HORA='"+request.getParameter("selectdehoras")+"'";
+				int idevento=0;
+				try {
+					ResultSet rs=s.executeQuery(sql);
+					while (rs.next()) {
+						idevento=rs.getInt("ID_EVENTO");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(consultaid());
+				System.out.println(preciofinal);
+				System.out.println(DNI);
+				System.out.println(request.getParameter("evento"));
+				System.out.println(idevento);
+				System.out.println(request.getParameter("numentradas"));
+				System.out.println(request.getParameter("selectdedias"));
+				System.out.println(request.getParameter("selectdehoras"));
+				//insertar datos de la compra en la bbdd
+				sql="insert into r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS,FECHA,HORA) values("+consultaid()+" , "+preciofinal+" , "+DNI+" , '"+request.getParameter("evento")+"',"+idevento+" , "+request.getParameter("numentradas")+" , '"+request.getParameter("selectdedias")+"' , '"+request.getParameter("selectdehoras")+"')";
+				try {
+					s.executeUpdate(sql);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}else {
+			request.setAttribute("DNI", DNI);
+			
+			request.setAttribute("evento",nevento);
+			request.setAttribute("mensajerror", "faltan datos");
+			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+			rd.forward(request, response);
 		}
-		//calcular precio total
-		 double preciofinal=preciod*Double.parseDouble(request.getParameter("numentradas"));
-		//insertar datos de la compra en la bbdd
-		sql="insert into r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS,FECHA,HORA) values("+consultaid()+" , "+preciofinal+" , '"+DNI+"' , '"+request.getParameter("evento")+"' , "+request.getParameter("id_evento")+" , "+request.getParameter("nentradas")+" , '"+request.getParameter("fecha")+"' , '"+request.getParameter("hora")+"')";
-		try {
-			s.executeUpdate(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	//metodo que coge de la base de datos los dias y horas disponibles del tipo de espectaculos
@@ -156,7 +186,7 @@ public class GestionFormularios {
 	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 	}
 		
@@ -237,12 +267,22 @@ public class GestionFormularios {
 		boolean todos = true;
 		String[] listadatos = new String[5];
 		listadatos[0] = request.getParameter("DNI");
-		listadatos[1] = request.getParameter("tipoespectaculo");
-		listadatos[2] = String.valueOf(request.getParameter("numentradas"));
-		listadatos[3] = request.getParameter("fecha");
-		listadatos[4] = request.getParameter("hora");
+		listadatos[1] = request.getParameter("evento");
+		listadatos[2] = request.getParameter("numentradas");
+		if (request.getParameter("selectdedias")==null) {
+			listadatos[3]="";
+		}else {
+			listadatos[3] = request.getParameter("selectdedias");
+		}
+		if (request.getParameter("selectdedias")==null) {
+			listadatos[4]="";
+		}else {
+			listadatos[4] = request.getParameter("selectdehoras");
+		}
+		
+		
 		for (int i = 0; i < listadatos.length; i++) {
-			if (listadatos[i].equals("") || listadatos[i] == null) {
+			if (listadatos[i].equals("") || listadatos[i].equals("null")|| listadatos[i]== null) {
 				todos = false;
 			}
 		}

@@ -45,8 +45,9 @@ pageEncoding="ISO-8859-1"%>
                 <input type="hidden" name="evento"  id="evento" value="<%=(String)request.getAttribute("evento")%>">
                 <input type="text" name="numentradas"  id="numentradas" value="<%=(String)request.getAttribute("numeroE")%>">
                 <select class="select" id="fname1" name="selectdedias">
-                    <% ArrayList<Evento> eventos = (ArrayList<Evento>) request.getAttribute("lista"); 
-                        if(eventos.size()>0){
+                    <% ArrayList<Evento> eventos = (ArrayList<Evento>) request.getAttribute("lista");
+                    	
+                        if(eventos != null){
                             for(Evento evento : eventos){
                                 out.println("<option value='"+evento.getFECHA()+"'>"+evento.getFECHA()+"</option>");
                             };
@@ -54,17 +55,23 @@ pageEncoding="ISO-8859-1"%>
                     %>
                 </select>
                 <br>
-                <select class="select" id="fname1" name="selecdehoras">
+                <select class="select" id="fname1" name="selectdehoras">
                 <% ArrayList<Evento> ev = (ArrayList<Evento>) request.getAttribute("lista"); 
-                        if(eventos.size()>0){
+                        if(ev != null){
                             for(Evento event : ev){
                                 out.println("<option value='"+event.getHORA()+"'>"+event.getHORA()+"</option>");
                             };
                         };
-                 %>
+                %>
                 </select>
                 <br>
                 <input type="hidden"  id="tipo" name="tipo" value="b">
+                <br>
+                <h4><%
+                    if(request.getAttribute("mensajerror")!=null){
+                        out.println(request.getAttribute("mensajerror"));
+                    }
+                %></h4>
                 <br>   
                 <input type="submit" value="Enivar"  id="submit">
                 <br>

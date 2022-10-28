@@ -62,6 +62,7 @@ input{
     width:200px;
     height: 40px;
     margin: 5px;
+    text-align: center;
 }
 #fname1::placeholder {
     text-align: center;
@@ -86,5 +87,11 @@ input{
 }
 .button1{
     color: #1F401D;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    font-size: 14px;
+    background-color: white;
 }
 

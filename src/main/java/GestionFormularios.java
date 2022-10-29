@@ -51,9 +51,8 @@ public class GestionFormularios {
 				iniciarpagina();
 				break;
 			case "a":
-				registrousuario();
 				DNI = request.getParameter("DNI");
-				// request.setAttribute("DNI", DNI);
+				registrousuario();
 				iniciarpagina();
 				break;
 			case "b":
@@ -267,6 +266,7 @@ public class GestionFormularios {
 				request.setAttribute("mensajeu", "faltan datos");
 			}
 		}
+		request.setAttribute("DNI",DNI);
 		rd.forward(request, response);
 	}
 
@@ -362,3 +362,4 @@ public class GestionFormularios {
 	}
 
 }
+

@@ -21,7 +21,7 @@ pageEncoding="ISO-8859-1"%>
     <%
     ArrayList<Evento> eventos = null;
     ArrayList<r_compras> compras=null;
- 	String numeroentradas="";
+    String numeroentradas="";
     try {
         compras = (ArrayList<r_compras>) request.getAttribute("compras");
         eventos = (ArrayList<Evento>) request.getAttribute("lista");
@@ -84,13 +84,12 @@ pageEncoding="ISO-8859-1"%>
                 </select>
                 <br>
                 <select class="select" id="fname1" name="selectdehoras">
-                    <%
-              if(eventos!=null){
+                <%
+                if(eventos!=null){
                 for(Evento evento : eventos){
                     if(evento.getHORA() != null){
                         out.println("<option value='"+evento.getHORA()+"'>"+evento.getHORA()+"</option>");
                     }
-
                 }};
             
                 %>
@@ -116,7 +115,7 @@ pageEncoding="ISO-8859-1"%>
                     <% 
                     if(compras!=null){
                         for(r_compras compra : compras){
-                        	out.println("<table>");
+                            out.println("<table>");
                             out.println("<tr>");
                             out.println("<td>ID_COMPRA: "+compra.getID_COMPRA()+"</td>");
                             out.println("<td>PRECIO TOTAL: "+compra.getPRECIO_TOTAL()+"</td>");

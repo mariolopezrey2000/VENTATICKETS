@@ -21,11 +21,23 @@ pageEncoding="ISO-8859-1"%>
     <%
     ArrayList<Evento> eventos = null;
     ArrayList<r_compras> compras=null;
-    String numeroentradas="";
+    ArrayList<String> horas=null;
+ 	String numeroentradas="";
+ 	String evento="";
+ 	
+ 	String e="";
+ 	String ne="";
+ 	String fecha="";
     try {
         compras = (ArrayList<r_compras>) request.getAttribute("compras");
         eventos = (ArrayList<Evento>) request.getAttribute("lista");
         numeroentradas=(String) request.getAttribute("numeroE");
+        evento=(String) request.getAttribute("evento");
+        horas=(ArrayList<String>) request.getAttribute("horas");
+        e=(String) request.getAttribute("e");
+        ne=(String) request.getAttribute("ne");
+        fecha=(String) request.getAttribute("fecha");
+        
         
     } catch (Exception ex) {
         
@@ -54,7 +66,7 @@ pageEncoding="ISO-8859-1"%>
                 <br>
                 <input type="text" id="N_E" name="N_E" placeholder="Numero De Entradas">
                 <br>
-                <input type="hidden" id="tipo" name="tipo" value="comprobar">
+                <input type="hidden" id="tipo" name="tipo" value="FORMULARIO_COMPROBAR_EVENTOS">
                 <h4><%
                     if(request.getAttribute("aviso")!=null){
                         out.println(request.getAttribute("aviso"));
@@ -65,47 +77,80 @@ pageEncoding="ISO-8859-1"%>
             </form>
             <form action="servlet" method="post">
                 <input type="hidden" name="DNI" id="DNI" value="<%=(String)request.getAttribute("DNI")%>">
-                <input type="hidden" name="evento" id="evento" value="<%=(String)request.getAttribute("evento")%>">
-                <%if (numeroentradas!=null){
-                out.println("<input type='text' name='numentradas' value='"+numeroentradas+"'>");
+                <% 
+                if(e!=null){
+                	out.println("<label>Evento:</label><br><input type='text' name='evento' value='"+e+"'><br>");
+                	
                 }else{
-                out.println("<input type='text' name='numentradas' value=''>");
-                }%>
+                	if (evento!=null){
+                        out.println("<label>Evento:</label><br><input type='text' name='evento' value='"+evento+"'><br>");
+                        }else{
+                        out.println("<label>Evento:</label><br><input type='text' name='evento' value=''><br>");
+                        };
+                };
+                
+                if(ne!=null){
+                	out.println("<label>Numero entradas: </label><br><input type='text' name='numentradas' value='"+ne+"'><br>");
+                }else{
+                	if (numeroentradas!=null){
+                        out.println("<label>Numero entradas: </label><br><input type='text' name='numentradas' value='"+numeroentradas+"'><br>");
+                        }else{
+                        out.println("<label>Numero entradas: </label><br><input type='text' name='numentradas' value=''><br>");
+                        };
+                };    
+                    
+                
+                
+                %>
                 <select class="select" id="fname1" name="selectdedias">
                     <% 
-                        if(eventos!=null){
-                            for(Evento evento : eventos){
-                                if(evento.getFECHA() != null){
-                                    out.println("<option value='"+evento.getFECHA()+"'>"+evento.getFECHA()+"</option>");
+                    if(fecha!=null){
+                    	out.println("<option value='"+fecha+"'>"+fecha+"</option>");
+                    }else{
+                    	if(eventos!=null){
+                            for(Evento ev : eventos){
+                                if(ev.getFECHA() != null){
+                                    out.println("<option value='"+ev.getFECHA()+"'>"+ev.getFECHA()+"</option>");
                                 }
                             }};
+                    };
                         
                     %>
                 </select>
+
                 <br>
+
+                <br>
+                <input type="hidden" id="tipo" name="tipo" value="FORMULARIOHORA">
+                <br>
+
+                <input type="submit" value="comprobar" id="submit">
+                <br>
+            </form>
+            <form action="servlet" method="post">
                 <select class="select" id="fname1" name="selectdehoras">
-                <%
-                if(eventos!=null){
-                for(Evento evento : eventos){
-                    if(evento.getHORA() != null){
-                        out.println("<option value='"+evento.getHORA()+"'>"+evento.getHORA()+"</option>");
+                    <%
+              if(horas!=null){
+                for(String h : horas){
+                    if(h != null){
+                        out.println("<option value='"+h+"'>"+h+"</option>");
                     }
+
                 }};
             
                 %>
                 </select>
-                <br>
-                <input type="hidden" id="tipo" name="tipo" value="b">
-                <br>
+                <input type="hidden" id="tipo" name="tipo" value="FORMLARIOCOMPRA">
+                <input type="hidden" name="e" id="e" value="<%=(String)request.getAttribute("e")%>">
+                <input type="hidden" name="ne" id="ne" value="<%=(String)request.getAttribute("ne")%>">
+                <input type="hidden" name="f" id="f" value="<%=(String)request.getAttribute("fecha")%>">
+                <input type="hidden" name="DNI" id="DNI" value="<%=(String)request.getAttribute("DNI")%>">
                 <h4><%
                     if(request.getAttribute("mensajerror")!=null){
                         out.println(request.getAttribute("mensajerror"));
                     }
                 %></h4>
-                <br>
-                <input type="submit" value="Enivar" id="submit">
-                <br>
-
+                <input type="submit" value="COMPRAR" id="submit">
             </form>
         </div>
         <div class="formulariosconsultas">
@@ -113,9 +158,10 @@ pageEncoding="ISO-8859-1"%>
                 <h3 class="formulario3">CONSULTA SUS COMPRAS</h3>
                 <form method="post">
                     <% 
-                    if(compras!=null){
+                    if(compras!=null && compras.size()>0){
                         for(r_compras compra : compras){
-                            out.println("<table>");
+                        	out.println("<form action='servlet' method='post'>");
+                        	out.println("<table>");
                             out.println("<tr>");
                             out.println("<td>ID_COMPRA: "+compra.getID_COMPRA()+"</td>");
                             out.println("<td>PRECIO TOTAL: "+compra.getPRECIO_TOTAL()+"</td>");
@@ -125,7 +171,11 @@ pageEncoding="ISO-8859-1"%>
                             out.println("<td>Numero de entradas: "+compra.getN_ENTRADAS()+"</td>");
                             out.println("<td>FECHA: "+compra.getFECHA_EVENTO()+"</td>");
                             out.println("<td>HORA: "+compra.getHORA_EVENTO()+"</td>");
+                            out.println("<input type='hidden' id='tipo' name='tipo' value='ELIMINAR'>");
+                            out.println("<input type='hidden' id='ID' name='ID' value='"+compra.getID_COMPRA()+"'>");
+                            out.println("<td><input type='submit' value='ELIMINAR' id='submit'></td>");
                             out.println("<tr>");
+                            out.println("</form>");
                             out.println("<br>");
                         }
                     }else{

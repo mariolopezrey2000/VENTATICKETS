@@ -30,7 +30,7 @@ pageEncoding="ISO-8859-1"%>
                         out.println(request.getAttribute("mensajeu"));
                     }
                 %></h4> 
-                <input type="checkbox" name="tipo" id="tipo" class="checkbox" value="a"checked>
+                <input type="checkbox" name="tipo" id="tipo" class="checkbox" value="FORMULARIOREGISTROUSUARIO"checked>
                 <br>
                 <input type="submit" value="Enivar"  id="submit">
             </form>
@@ -40,7 +40,7 @@ pageEncoding="ISO-8859-1"%>
             <form method="post"  action="servlet">   
                 <input type="text" id="fname1" name="DNI"placeholder="Dni">
                 <br>
-                <input type="checkbox" name="tipo" id="tipo" class="checkbox" value="consultausuario"checked>
+                <input type="checkbox" name="tipo" id="tipo" class="checkbox" value="FORMULARIOINICIOSESION"checked>
                 <br>
                 <%if(request.getAttribute("error")!=null){
                     out.println("<h4>"+request.getAttribute("error")+"</h4>");

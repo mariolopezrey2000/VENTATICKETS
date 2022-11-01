@@ -1,7 +1,7 @@
-import java.sql.Date;
+package clases;
 
 public class r_compras {
-    private int ID_COMPRA;
+	private int ID_COMPRA;
     private double PRECIO_TOTAL;
     private String DNI_USUARIO;
     private String NOMBRE_EVENTO;
@@ -73,5 +73,4 @@ public class r_compras {
     public void setHORA_EVENTO(String HORA_EVENTO) {
         this.HORA_EVENTO = HORA_EVENTO;
     }
-
 }

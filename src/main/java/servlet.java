@@ -1,11 +1,4 @@
-package principal;
-
 import java.io.IOException;
-
-import java.sql.DriverManager;
-import java.sql.Statement;
-
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,53 +21,13 @@ public class servlet extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-    private static java.sql.Connection con;
-	private static final String driver="com.mysql.cj.jdbc.Driver";
-	private static final String user="root";
-	private static final String pwd="";
-	private static final String url="jdbc:mysql://localhost:3306/gestiontickets";
-	private static Statement s;
+
 
 	@Override
-    public void init(ServletConfig config) throws ServletException {
-    	// TODO Auto-generated method stub
-    	try {
-			Class.forName(driver);
-			con=DriverManager.getConnection(url,user,pwd);
-			if (con==null) {
-				System.out.println("no hay conexion");
-			}else {
-				System.out.println("hay conexion");
-				s=con.createStatement();
-			}
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		GestionFormularios gf=new GestionFormularios();
-		GestionFormularios.setS(s);
-		GestionFormularios.setRequest(request);
-		GestionFormularios.setResponse(response);
-		gf.gestion();
-		
-
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		super.service(req, resp);
+		req.getRequestDispatcher("conexionbbdd").forward(req, resp);
 	}
 	
-
 }

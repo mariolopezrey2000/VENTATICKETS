@@ -1,4 +1,4 @@
-package clases;
+
 
 public class r_compras {
 	private int ID_COMPRA;

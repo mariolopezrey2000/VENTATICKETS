@@ -5,14 +5,16 @@ pageEncoding="ISO-8859-1"%>
 <%@ page import="clases.r_compras"%>
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Reserva tus tiquets</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='principal.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='css.css'>
     <script src='main.js'></script>
 </head>
+
 <body>
     <%
     ArrayList<Evento> eventos = null;
@@ -134,11 +136,10 @@ pageEncoding="ISO-8859-1"%>
                 <input type="submit" value="COMPRAR" id="submit">
             </form>
         </div>
-        <div class="formulariosconsultas">
-            <div class="formularioconsultas">
-                <h3 class="formulario3">CONSULTA SUS COMPRAS</h3>
-                <form method="post">
-                    <% 
+        <div class="formularioconsultas">
+            <h3 class="formulario3">CONSULTA SUS COMPRAS</h3>
+            <form method="post">
+                <% 
                     if(compras!=null && compras.size()>0){
                         for(r_compras compra : compras){
                             out.println("<form action='servlet' method='post'>");
@@ -163,12 +164,12 @@ pageEncoding="ISO-8859-1"%>
                         out.println("<h4>No hay compras</h4>");
                     }
                     %>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
-    <div class="piedepagina">
+    <div class="piedepagina" style="float: left;">
         <p>COMPANY</p>
     </div>
 </body>
+
 </html>

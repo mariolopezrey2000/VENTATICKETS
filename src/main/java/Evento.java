@@ -1,5 +1,3 @@
-package clases;
-
 public class Evento {
     private String NOMBRE;
     private int ID_EVENTO;

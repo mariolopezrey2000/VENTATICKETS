@@ -1,14 +1,9 @@
-package principal;
-
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
-import clases.Evento;
-import clases.r_compras;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +39,6 @@ public class GestionFormularios {
 	public static void setS(Statement s) {
 		GestionFormularios.s = s;
 	}
-
 	public void gestion() throws ServletException, IOException {
 		switch (request.getParameter("tipo")) {
 			case "FORMULARIOREGISTROUSUARIO":
@@ -126,14 +120,13 @@ public class GestionFormularios {
 	public void registrousuario() throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 		if (consultarusuario()) {
-			System.out.println("usuario encontrado");
 			request.setAttribute("mensajeu", "Usuario ya está dado de alta");
 			rd.forward(request, response);
 		} else {
 			if (comprobartodosdatosusuario()) {
 				// insertar datos del usuario en la bbdd
 				String sql = "insert into usuario (DNI,NOMBRE,CORREO,NUMEROTELEFONO) values('" +
-					request.getParameter("DNI") + "','" + request.getParameter("NOMBRE") + "_" +
+					request.getParameter("DNI") + "','" + request.getParameter("NOMBRE") + " " +
 					request.getParameter("APELLIDO") + "','" + request.getParameter("CORREO") + "','" +
 					request.getParameter("NUMEROTELEFONO") + "')";
 				try {
@@ -156,7 +149,7 @@ public class GestionFormularios {
 	public boolean consultarusuario() {
 		ResultSet rs;
 		boolean encontrado = false;
-		String comprobarusuario = "select * from usuario where DNI=" + request.getParameter("DNI");
+		String comprobarusuario = "select * from usuario where DNI=" + request.getParameter("DNI")+";";
 		try {
 			rs = s.executeQuery(comprobarusuario);
 			while (rs.next()) {
@@ -173,7 +166,8 @@ public class GestionFormularios {
 
 	public void comprobarhoras() {
 		RequestDispatcher rd = request.getRequestDispatcher("principal.jsp");
-		String sql = "select * from eventos where FECHA='" + request.getParameter("selectdedias") + "' and NOMBRE='" + request.getParameter("evento") + "'";
+		String sql = "select * from eventos where FECHA='" + request.getParameter("selectdedias") 
+		+"' and NOMBRE='" + request.getParameter("evento") + "'";
 		ArrayList < String > horas = new ArrayList < String > ();
 		DNI = request.getParameter("DNI");
 		try {
@@ -220,13 +214,15 @@ public class GestionFormularios {
 				while (rs.next()) {
 					PRECIO_VENTA = rs.getDouble("PRECIO_VENTA");
 				}
+				//CALCULAR PRECIO TOTAL
 				double preciofinal = PRECIO_VENTA * Double.parseDouble(NUMEROENTRADAS);
-				System.out.println(preciofinal);
+				//INTRODUCIR TODOS LOS DATOS A LA BBDD
 				sql = "insert into r_compras (ID_COMPRA,PRECIO_TOTAL,DNI_USUARIO,NOMBRE_EVENTO,ID_EVENTO,N_ENTRADAS,FECHA,HORA) values(" +
 					consultaid() + " , " + preciofinal + " , " + DNI + " , '" + request.getParameter("e") + "'," +
 					idevento + " , " + request.getParameter("ne") + " , '" +
 					request.getParameter("f") + "' , '" + request.getParameter("selectdehoras") + "')";
 				s.executeUpdate(sql);
+				//ACTUALIZAR LA BBDD EL NUMERO DE ENTRADAS DISPONIBLES-NUMERO DE ENTRADAS COMPRADAS
 				sql = "update eventos set N_E_DISPONIBLES=N_E_DISPONIBLES-" + request.getParameter("ne") +
 					" where ID_EVENTO=" + idevento;
 				s.executeUpdate(sql);
@@ -246,7 +242,7 @@ public class GestionFormularios {
 	}
 
 	public void cfonsultacompra() throws ServletException, IOException {
-		if (!request.getParameter("N_E").equals("")) {
+		if (verificarNumeros(request.getParameter("N_E"))&&!request.getParameter("N_E").equals("0")&&!request.getParameter("N_E").contains("-")) {
 			Integer ne = Integer.parseInt(request.getParameter("N_E"));
 			String sql = "select * from eventos where NOMBRE='" + request.getParameter("selectdeespectaculos") +
 				"' AND N_E_DISPONIBLES>=" + ne + "";
@@ -331,21 +327,31 @@ public class GestionFormularios {
 			// TODO Auto-generated catch block
 		}
 	}
+	public boolean verificarNumeros(String numOlet){
+        boolean num=false;
+        if((numOlet.contains("0")||numOlet.contains("1")||numOlet.contains("2"))||numOlet.contains("3")||numOlet.contains("4")||numOlet.contains("5")||numOlet.contains("6")||numOlet.contains("7")||numOlet.contains("8")||numOlet.contains("9")||numOlet.contains("!")){
+            System.out.println("tiene numeros");
+            num=true;
+        }
+    return num;
+    }
 
 	public boolean comprobartodosdatosusuario() {
-		boolean todos = true;
+		boolean todos = false;
 		String[] listadatos = new String[5];
 		listadatos[0] = request.getParameter("NOMBRE");
 		listadatos[1] = request.getParameter("APELLIDO");
 		listadatos[2] = request.getParameter("DNI");
 		listadatos[3] = request.getParameter("CORREO");
 		listadatos[4] = request.getParameter("NUMEROTELEFONO");
-		for (int i = 0; i < listadatos.length; i++) {
-			if (listadatos[i].equals("")) {
-				todos = false;
+		if (verificarNumeros(listadatos[2])) {
+			for (int i = 0; i < listadatos.length; i++) {
+				if (!listadatos[i].equals("")) {
+					todos = true;
+				}
 			}
-		}
-		return todos;
+			return todos;
+		}return todos;
 	}
 
 	public boolean comprobartodosdatoscompra() {
@@ -361,7 +367,7 @@ public class GestionFormularios {
 			listadatos[4] = request.getParameter("selectdehoras");
 		}
 		for (int i = 0; i < listadatos.length; i++) {
-			if (listadatos[i].equals("") || listadatos[i].equals("null") || listadatos[i] == null) {
+			if (listadatos[i].equals("") || listadatos[i].equals("null")|| listadatos[i].equals("0") || listadatos[i] == null) {
 				todos = false;
 			}
 		}
